@@ -1,15 +1,21 @@
 # 🧳 Suitcase
 
-A small command line utility in Swift for packing the contents of a directory into a single file.
+A small command line utility in Swift for:
+* Packing the contents of a directory into a single JSON file 
+* Unpacking a file back into a directory structure
 
 ## Usage
 
+### Pack
+
 ```sh
-suitcase ~/data ~/data/packed-file.txt
+suitcase pack ~/data ~/data/packed-file.txt
 ```
 
 ```sh
-suitcase [<directory>] [<outfile>] [--filter <filter>]
+OVERVIEW: Pack a directory of files into a single file.
+
+USAGE: suitcase pack [<directory>] [<outfile>] [--filter <filter>]
 
 ARGUMENTS:
 <directory>             The directory that will be parsed.
@@ -20,21 +26,21 @@ OPTIONS:
 -h, --help              Show help information.
 ```
 
-## Notes
+### Unpack
 
-An entry is defined as its path followed by its contents. Entries are delimited at their start and end ranges by the following unicode scalers:
-
-Name | Scaler
---|--
-Start of Text | `U+0002`
-End of Text | `U+0003`
-
-The produced file looks something like this:
-
+```sh
+suitcase unpack ~/data/packed-file.txt
 ```
-/path/to/file.extension
-contents
 
-/path/to/file2.extension
-more contents
+```sh
+OVERVIEW: Unpack a packed file back into a directory.
+
+USAGE: suitcase unpack [<infile>] [--filter <filter>]
+
+ARGUMENTS:
+<infile>                The packed file that will be unpacked.
+
+OPTIONS:
+-f, --filter <filter>   Filter out hidden files. (default: true)
+-h, --help              Show help information.
 ```
