@@ -10,32 +10,64 @@ import Foundation
 
 struct Suitcase: ParsableCommand {
     static let configuration = CommandConfiguration(
-        abstract: "Packs the contents of a directory into a single file."
+        abstract: "Packing or unpacking a directory into a single file and back.",
+        subcommands: [Pack.self, Unpack.self]
     )
-    
-    @Argument(help: ArgumentHelp("The directory that will be parsed."))
-    var directory = ""
-    
-    @Argument(help: ArgumentHelp("The name of the file that will be generated."))
-    var outfile = "outfile.txt"
-    
-    @Option(name: .shortAndLong, help: "Filter out hidden files.")
-    var filter = true
+}
 
-    func validate() throws {
-        guard !directory.isEmpty else {
-            throw ValidationError("Missing expected argument '<directory>'")
+extension Suitcase {
+
+    struct Pack: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            abstract: "Pack a directory of files into a single file.")
+        
+        @Argument(help: ArgumentHelp("The directory that will be parsed."))
+        public var directory = ""
+        
+        @Argument(help: ArgumentHelp("The name of the file that will be generated."))
+        var outfile = "outfile.txt"
+        
+        @Option(name: .shortAndLong, help: "Filter out hidden files.")
+        var filter = true
+        
+        func validate() throws {
+            guard !directory.isEmpty else {
+                throw ValidationError("Missing expected argument '<directory>'")
+            }
+        }
+        
+        func run() {
+            removeOldFile(path: outfile)
+            
+            let files = getFileNames(path: directory, filter: filter)
+            let contents = getContentsOfFiles(path: directory, fileNames: files)
+            
+            save(contents: contents, to: outfile)
         }
     }
     
-    func run() {
-        removeOldFile(path: outfile)
+    struct Unpack: ParsableCommand {
+        static let configuration = CommandConfiguration(
+            abstract: "Unpack a packed file back into a directory.")
         
-        let files = getFileNames(path: directory, filter: filter)
-        let contents = getContentsOfFiles(path: directory, fileNames: files)
+        @Argument(help: ArgumentHelp("The packed file that will be unpacked."))
+        public var infile = ""
         
-        save(contents: contents, to: outfile)
+        @Option(name: .shortAndLong, help: "Filter out hidden files.")
+        var filter = true
+        
+        func validate() throws {
+            guard !infile.isEmpty else {
+                throw ValidationError("Missing expected argument '<infile>'")
+            }
+        }
+        
+        func run() {
+            let data = getPackedContents(path: infile)
+            save(contents: data)
+        }
     }
 }
+
 
 Suitcase.main()
