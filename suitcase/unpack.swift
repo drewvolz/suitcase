@@ -38,7 +38,7 @@ extension Suitcase.Unpack {
 
                 try data.write(to: fileUrl, atomically: true, encoding: String.Encoding.utf8)
 
-                print("Success. Files are unpacked.")
+                print("Success in unpacking \(destination).")
             } catch let error as NSError {
                 print("Failed writing to URL: \(destination), Error: " + error.localizedDescription)
             }
