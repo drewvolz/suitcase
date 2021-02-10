@@ -36,7 +36,7 @@ extension Suitcase.Unpack {
             do {
                 let fileUrl = URL(fileURLWithPath: destination)
 
-                try data.write(to: fileUrl, atomically: true, encoding: String.Encoding.utf8)
+                try data.write(to: fileUrl, atomically: true, encoding: .utf8)
 
                 print("Success in unpacking \(destination).")
             } catch let error as NSError {
