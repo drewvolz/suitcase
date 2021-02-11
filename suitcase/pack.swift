@@ -16,7 +16,7 @@ extension Suitcase.Pack {
             items = try fileManager.contentsOfDirectory(atPath: path)
             
             if filter {
-                items = items.filter { $0 != ".DS_Store" }
+                items = items.filter { !$0.starts(with: ".") }
             }
         } catch let error as NSError {
             print("Failed parsing the filenames for the path: \(path), Error: " + error.localizedDescription)
